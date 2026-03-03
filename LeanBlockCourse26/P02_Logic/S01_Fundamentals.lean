@@ -496,3 +496,10 @@ example (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R := by
 -- `P` implies `Q` (modus tollens of `↔`)
 example (P Q : Prop) (h : Q ↔ P) : P → Q := by
   sorry
+
+-- Exercise 3.3
+-- Given four equivalent propositions in a cycle, prove that the first
+-- implies the last. You will need reverse rewriting (`← h`) or `symm`,
+-- and rewriting at hypotheses (`rw [...] at`).
+example (P Q R S : Prop) (h₁ : P ↔ Q) (h₂ : R ↔ Q) (h₃ : R ↔ S) (p : P) : S := by
+  sorry
