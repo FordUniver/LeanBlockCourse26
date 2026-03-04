@@ -28,8 +28,9 @@ What tactic do I need? Find the connective in your **goal** or **hypothesis** an
 
 | | `⊢` Goal | Hypothesis `h` |
 |---|---|---|
-| **Equality** `a = b` | `rfl` / `calc` / `ring` / `omega` | `rw [h]` / `rw [← h]` |
-| **Inequality** `a < b`, `a ≤ b` | `omega` / `linarith` | `omega` / `linarith` |
+| **Equality** `a = b` | `rfl` | `rw [h]` / `rw [← h]` |
+<!-- | **Equality** `a = b` | `rfl` / `calc` / `ring` / `omega` | `rw [h]` / `rw [← h]` | -->
+<!-- | **Inequality** `a < b`, `a ≤ b` | `omega` / `linarith` | `omega` / `linarith` | -->
 
 Use `rw [h] at h'` to rewrite in a specific hypothesis. Use `nth_rw n [h]` to rewrite only the *n*-th occurrence.
 
@@ -40,7 +41,7 @@ Use `rw [h] at h'` to rewrite in a specific hypothesis. Use `nth_rw n [h]` to re
 | **Universal** `∀ x, P x` | `intro x` | `apply h` / `exact h a` |
 | **Existential** `∃ x, P x` | `use a` | `obtain ⟨x, hx⟩ := h` |
 
-`choose f hf using h` extracts a witness function from `h : ∀ x, ∃ y, P x y`, yielding `f : X → Y` and `hf : ∀ x, P x (f x)`.
+<!-- `choose f hf using h` extracts a witness function from `h : ∀ x, ∃ y, P x y`, yielding `f : X → Y` and `hf : ∀ x, P x (f x)`. -->
 
 ## True, False, and closing tactics
 
@@ -72,14 +73,15 @@ Tactic mode (after `by`) builds proofs step by step. Term mode constructs proofs
 |---|---|
 | `have q := h p` | Forward step: derive a new fact from existing ones |
 | `suffices p : P by ...` | Backward step: state what would be enough, then prove it |
-| `calc a = b := ... _ = c := ...` | Chain equalities or inequalities through intermediate steps |
-| `by_contra h` | Assume `¬ goal` and derive `False` (classical) |
-| `by_cases h : P` | Split into `P` and `¬P` branches (classical) |
-| `contrapose` | Flip `P → Q` to `¬Q → ¬P` (`contrapose!` also applies `push_neg`) |
 | `rintro ⟨p, q⟩` / `rintro (p \| q)` | Combine `intro` with pattern matching |
-| `induction n with \| zero => ... \| succ n ih => ...` | Structural induction on natural numbers or inductive types |
-| `ext x` | Prove `f = g` by showing `∀ x, f x = g x` (functions, sets, etc.) |
+<!-- | `calc a = b := ... _ = c := ...` | Chain equalities or inequalities through intermediate steps | -->
+<!-- | `by_contra h` | Assume `¬ goal` and derive `False` (classical) | -->
+<!-- | `by_cases h : P` | Split into `P` and `¬P` branches (classical) | -->
+<!-- | `contrapose` | Flip `P → Q` to `¬Q → ¬P` (`contrapose!` also applies `push_neg`) | -->
+<!-- | `induction n with \| zero => ... \| succ n ih => ...` | Structural induction on natural numbers or inductive types | -->
+<!-- | `ext x` | Prove `f = g` by showing `∀ x, f x = g x` (functions, sets, etc.) | -->
 
+<!--
 ## Automation
 
 | Tactic | Proves |
@@ -93,3 +95,4 @@ Tactic mode (after `by`) builds proofs step by step. Term mode constructs proofs
 | `grind` | Mixed reasoning (congruence, arithmetic, quantifiers) |
 | `decide` | Decidable propositions by computation (e.g., `2 + 3 = 5`) |
 | `exact?` / `apply?` | Search the library for a matching lemma |
+-->
