@@ -17,7 +17,7 @@ import Mathlib.Logic.Basic
 This module introduces how to work with compound propositions:
 - Conjunction (`AND`, `∧`)
 - Disjunction (`OR`, `∨`)
-- Equivalence (`↔`) is (essentially but not exactly) just a `_ → _ ∧ _ → _`
+- Equivalence (`↔`) is (essentially but not exactly) just a `(_ → _) ∧ (_ → _)`
 
 Key tactics:
 - `constructor` for splitting compound goals
@@ -35,8 +35,8 @@ To prove `P ∧ Q`, we need to prove both `P` and `Q`. We can:
 - Use `constructor` as shorthand
 - Use angle bracket notation `⟨p, q⟩`
 
-`constructor` is used around 1000 times in mathlib while
-`exact` followed by an `⟨⬝⟩` term is used around 5000 times.
+`constructor` is used around 3,000 times in mathlib while
+`exact` followed by an `⟨⬝⟩` term is used around 7,000 times.
 -/
 
 #check And
@@ -117,8 +117,8 @@ To use a hypothesis `h : P ∧ Q`, we can:
 - Use `obtain` for destructuring
 - Use `cases` and `rcases` for basic pattern matching
 
-`obtain` is used around 11,000 times in mathlib, `cases` 4000 times,
-and `rcases` 7000 times.
+`obtain` is used around 15,000 times in mathlib, `cases` 3,000 times,
+and `rcases` 7,000 times.
 -/
 
 -- Using `.1` / `.2` notation

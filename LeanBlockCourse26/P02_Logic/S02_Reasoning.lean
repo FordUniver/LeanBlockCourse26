@@ -52,7 +52,7 @@ facts in it through the `have` tactic.
 
 The `have` tactic introduces new facts derived from existing ones.
 It's useful for breaking down complex proofs into steps and is
-used around 30,000 times in mathlib.
+used around 34,000 times in mathlib.
 -/
 
 -- Using have to build up facts step by step
@@ -88,7 +88,7 @@ model you should use is:
 
 The `apply` tactic works backward from the goal, reducing it to simpler subgoals.
 If we want to prove `Q` and we have `h : P → Q`, then `apply h` changes the goal
-from `Q` to `P`. This tactic is used around 17,000 times in mathlib.
+from `Q` to `P`. This tactic is used around 15,000 times in mathlib.
 -/
 
 -- The same proof using apply to work backward
@@ -209,7 +209,7 @@ Enables explicit backward reasoning by declaring intermediate goals:
 2. Once proven, provides access to the subgoal proof via `this`
 3. Maintains goal context for clearer proof structuring
 
-This tactic is used around 2,600 times in mathlib. But it is very nice
+This tactic is used around 2,800 times in mathlib. But it is very nice
 in that it mimics the human language "it suffices to show that ... because ...".
 -/
 
@@ -246,7 +246,7 @@ example (P Q R : Prop) (h₁ : P → Q) (h₂ : Q → R) (p : P) : R := by
 The `refine` tactic behaves like `exact` but permits placeholders (i.e. `?_`)
 in the provided term. Any unsolved hole that is not fixed by unification with
 the main goal's target is converted into a new goal. This tactic is used
-around 19,000 times in mathlib.
+around 22,000 times in mathlib.
 -/
 
 example (P Q : Prop) (f : P → Q) (p : P) : Q := by
