@@ -3,7 +3,9 @@
 
 Custom `#golf` command that wraps `example` or `theorem` declarations and reports:
 1. **Source score**: non-whitespace characters in the proof body
-2. **Term score**: Expr node count of the elaborated proof term (named decls only)
+2. **Term score**: Expr node count of the elaborated proof term
+3. **PP length**: character count of the pretty-printed proof term
+4. **Axioms**: foundational axioms transitively used by the proof
 -/
 
 import Lean
@@ -47,17 +49,59 @@ def getDeclName? (cmd : Syntax) : Option Name :=
     else none
   else none
 
+/-- Core axiom collection: BFS from initial names through the constant dependency graph -/
+private partial def collectAxiomsCore (env : Environment) (init : Array Name) : Array Name :=
+  go init {} #[]
+where
+  go (stack : Array Name) (visited : NameSet) (axioms : Array Name) : Array Name :=
+    match stack.back? with
+    | none => axioms
+    | some n =>
+      let stack := stack.pop
+      if visited.contains n then go stack visited axioms
+      else
+        let visited := visited.insert n
+        match env.find? n with
+        | some (.axiomInfo _) => go stack visited (axioms.push n)
+        | some ci =>
+          let deps := ci.type.getUsedConstants ++
+            (ci.value?.map (·.getUsedConstants) |>.getD #[])
+          go (deps.foldl Array.push stack) visited axioms
+        | none => go stack visited axioms
+
+/-- Collect all axioms transitively used by a named declaration -/
+def collectUsedAxioms (env : Environment) (declName : Name) : Array Name :=
+  collectAxiomsCore env #[declName]
+
+/-- Collect all axioms transitively referenced by an expression -/
+def collectUsedAxiomsExpr (env : Environment) (e : Expr) : Array Name :=
+  collectAxiomsCore env e.getUsedConstants
+
+/-- Format term-level measurements as a suffix string -/
+def formatTermInfo (val : Expr) (axioms : Array Name) : CommandElabM String := do
+  let nodes := val.nodeCount
+  let ppLen ← liftTermElabM do
+    let fmt ← ppExpr val
+    return fmt.pretty.length
+  let axiomStr := if axioms.isEmpty then "none"
+    else s!"{axioms.size} ({", ".intercalate (axioms.map (·.toString)).toList})"
+  return s!" | term: {nodes} nodes | pp: {ppLen} chars | axioms: {axiomStr}"
+
 /-- `#golf` wraps a declaration and reports proof complexity.
 
 - Source score: non-whitespace characters in the proof (after `:= by` or `:=`)
-- Term score: Expr nodes in the elaborated proof term (requires `theorem`, not `example`)
+- Term score: Expr nodes in the elaborated proof term
+- PP length: character count of the pretty-printed proof term
+- Axioms: foundational axioms transitively used by the proof
+
+Works for both `example` and named declarations (`theorem`, `def`).
 
 ```
 #golf example (P : Prop) : P → P := by exact id
--- Golf: 7 chars
+-- Golf: 7 chars | term: 5 nodes | pp: 11 chars | axioms: none
 
 #golf theorem myThm (P : Prop) : P → P := by exact id
--- Golf: 7 chars | term: 5 nodes
+-- Golf: 7 chars | term: 5 nodes | pp: 11 chars | axioms: none
 ```
 -/
 elab "#golf " cmd:command : command => do
@@ -76,15 +120,40 @@ elab "#golf " cmd:command : command => do
     | logInfo "Could not get end position"; return
   let src := (Substring.Raw.mk fileMap.source startPos endPos).toString
   let charScore := golfScore src
-  -- Term-level measurement (only for named declarations)
-  let termInfo ←
+  -- Term-level measurement
+  let termInfo ← do
     if let some declName := getDeclName? cmd.raw then
+      -- Named declaration: look up term directly
       let env ← getEnv
       if let some ci := env.find? declName then
         if let some val := ci.value? then
-          pure s!" | term: {val.nodeCount} nodes"
+          formatTermInfo val (collectUsedAxioms env declName)
         else pure ""
       else pure ""
+    else if let some exNode := cmd.raw.findKind ``Lean.Parser.Command.example then
+      -- Example: elaborate a synthetic def to capture the proof term
+      let some exStart := exNode.getPos? | pure ""
+      let some exEnd := exNode.getTailPos? | pure ""
+      let exSrc := (Substring.Raw.mk fileMap.source exStart exEnd).toString
+      if !exSrc.startsWith "example" then pure ""
+      else
+        let defSrc := "noncomputable def _golf_tmp" ++ exSrc.drop 7
+        let env ← getEnv
+        match Parser.runParserCategory env `command defSrc "<golf>" with
+        | .error _ => pure ""
+        | .ok stx =>
+          withoutModifyingEnv do
+            try
+              elabCommand stx
+              let env ← getEnv
+              let ns ← getCurrNamespace
+              let qualName := if ns.isAnonymous then `_golf_tmp else ns ++ `_golf_tmp
+              if let some ci := env.find? qualName then
+                if let some val := ci.value? then
+                  formatTermInfo val (collectUsedAxiomsExpr env val)
+                else pure ""
+              else pure ""
+            catch _ => pure ""
     else pure ""
   logInfo m!"Golf: {charScore} chars{termInfo}"
 
