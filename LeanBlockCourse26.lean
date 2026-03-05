@@ -5,5 +5,5 @@ import LeanBlockCourse26.P01_Introduction.S05_ProgrammingLanguage
 import LeanBlockCourse26.P02_Logic.S01_Fundamentals
 import LeanBlockCourse26.P02_Logic.S02_Reasoning
 import LeanBlockCourse26.P02_Logic.S03_Connectives
--- import LeanBlockCourse26.P02_Logic.S04_Negation
+import LeanBlockCourse26.P02_Logic.S04_Negation
 -- import LeanBlockCourse26.P02_Logic.S05_Quantifiers
