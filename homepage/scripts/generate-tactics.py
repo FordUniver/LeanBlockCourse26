@@ -11,8 +11,9 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-DATA_FILE = ROOT / "scripts" / "tactic-data.json"
+HOMEPAGE = Path(__file__).resolve().parent.parent
+ROOT = HOMEPAGE.parent
+DATA_FILE = HOMEPAGE / "scripts" / "tactic-data.json"
 
 # Regex for docstring blocks: /- ... -/
 DOCSTRING_RE = re.compile(r"/-(.*?)-/", re.DOTALL)
@@ -273,7 +274,7 @@ def main() -> None:
                         help="Print to stdout instead of writing")
     args = parser.parse_args()
 
-    output = args.output or ROOT / "docs" / "TACTICS.md"
+    output = args.output or HOMEPAGE / "TACTICS.md"
     data_file = args.data or DATA_FILE
 
     # Load tactic data

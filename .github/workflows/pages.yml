@@ -5,10 +5,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docs/**'
+      - 'homepage/**'
       - 'README.md'
       - 'LeanBlockCourse26/**'
-      - 'scripts/**'
       - '.github/workflows/pages.yml'
 
 permissions:
@@ -33,12 +32,12 @@ jobs:
         with:
           python-version: '3.12'
       - run: |
-          python scripts/generate-outline.py
-          python scripts/generate-tactics.py --github-blob "https://github.com/FordUniver/LeanBlockCourse26/blob/main"
+          python homepage/scripts/generate-outline.py
+          python homepage/scripts/generate-tactics.py --github-blob "https://github.com/FordUniver/LeanBlockCourse26/blob/main"
       - uses: actions/configure-pages@v5
       - uses: actions/jekyll-build-pages@v1
         with:
-          source: ./docs
+          source: ./homepage
       - uses: actions/upload-pages-artifact@v3
 
   deploy:

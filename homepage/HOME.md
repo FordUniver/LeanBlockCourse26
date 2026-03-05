@@ -9,7 +9,10 @@ permalink: /
 <div class="announcements">
 <div class="announcement-item"><span class="label label-yellow">Tue, Mar 3</span><span>Since we went over by 10 minutes, on Wednesday (March 4) we start at <strong>9:40</strong> instead of 9:30.</span></div>
 <div class="announcement-item"><span class="label label-yellow">Mon, Mar 2</span><span>Since we went over by 30 minutes, on Tuesday (March 3) we start at <strong>10:00</strong> instead of 9:30.</span></div>
+<details>
+<summary>Older announcements</summary>
 <div class="announcement-item"><span class="label label-yellow">Mon, Mar 2</span><span>Uploaded slides for <code>P01_Introduction</code>.</span></div>
+</details>
 </div><!-- end announcements -->
 
 # Formalized Math in LEAN
