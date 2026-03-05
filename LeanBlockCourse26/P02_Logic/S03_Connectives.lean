@@ -48,6 +48,7 @@ To prove `P ∧ Q`, we need to prove both `P` and `Q`. We can:
 
 -- Using `apply And.intro` will open two goals (one for `a` and one for `b`)
 
+-- This is `And.intro` in Lean (Init.Prelude)
 -- The linter will complain about the following formatting, even though this
 -- produces valid Lean code. Without `·` focusing, the proof block simply
 -- moves on to the next open goal after each tactic closes the current one.
@@ -205,6 +206,7 @@ example (P Q : Prop) : (P ∧ Q) → P := by
   obtain ⟨p, _⟩ := h
   exact p
 
+-- This is `And.left` in Lean (Init.Prelude)
 theorem and_left (P Q : Prop) : (P ∧ Q) → P := by
   intro ⟨p, _⟩
   exact p
@@ -370,8 +372,7 @@ To prove P ∨ Q, we need to prove either P or Q. We can:
 #check Or.inl     -- takes a proof `(a : P)` and produces `(P ∨ Q)`
 #check Or.inr     -- takes a proof `(b : Q)` and produces `(P ∨ Q)`
 
--- The most explicit way to deal with `∨` in goal is to
--- directly use `apply Or.inl` or `apply Or.inr`
+-- This is `Or.inl` in Lean (Init.Prelude)
 theorem goal_or_apply (P Q : Prop) (p : P) : P ∨ Q := by
   apply Or.inl
   exact p
@@ -559,8 +560,7 @@ example (P Q R : Prop) : (P ∧ Q) ∨ R → P ∨ R := by
   · right
     exact r
 
--- But if we also want to do the pattern matching in the
--- `intro` (like we have previously seen) we now need `rintro`.
+-- No single Lean name; this combines `Or.imp_left` (Init.SimpLemmas) with `And.left`
 theorem and_or_rintro (P Q R : Prop) : (P ∧ Q) ∨ R → P ∨ R := by
   rintro (⟨p, q⟩ | r)
   · left

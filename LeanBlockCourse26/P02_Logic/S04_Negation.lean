@@ -121,6 +121,7 @@ The `exfalso` tactic converts any goal to `False`, allowing you to:
 It is used around 200 times in mathlib.
 -/
 
+-- This is `False.elim` in Lean (Init.Prelude)
 theorem exfalso_example (P : Prop) (h : False) : P := by
   exfalso    -- Changes goal to False
   exact h    -- Uses the False hypothesis
@@ -140,6 +141,7 @@ Normalizes negated expressions by pushing negation inward:
 - Simplifies nested negations
 -/
 
+-- This is `Classical.not_not.mp` in Lean (Init.Classical), exported as `not_not.mp` by Mathlib.Logic.Basic
 theorem push_neg_example (P : Prop) : ¬¬P → P := by
   push_neg
   exact id
@@ -153,6 +155,7 @@ Related: https://www.youtube.com/watch?v=aMxcAaR0oHU
 -/
 
 -- Exercise 1.1a
+-- This is `not_not_intro` in Lean (Init.Core), also `Classical.not_not.mpr` / `not_not.mpr`
 -- Prove the statement using `push_neg`
 theorem nnp_of_p_exercise_push_neg (P : Prop) : P → ¬¬P := by
   intro p
@@ -333,6 +336,7 @@ accessing classical axioms when needed.
 -/
 
 -- Exercise 2.1
+-- This is `mt` (modus tollens) in Lean (Init.Core); `Function.mt` in Mathlib.Logic.Basic enables `h.mt`
 -- Prove this constructively, i.e., using intuitionistic logic
 -- and verify no axioms were used with `#print axioms _`
 theorem exercise_2_1_constructive (P Q : Prop) : (P → Q) → (¬Q → ¬P) := by

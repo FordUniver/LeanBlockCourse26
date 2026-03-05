@@ -396,7 +396,7 @@ example (P Q : Prop) (h₁ : P ↔ Q) (p : P) : Q := by
   rename' p => q
   exact q
 
--- Multiple rewrites
+-- No single Lean name; this combines `Iff.trans` and `Iff.symm` (Init.Core)
 theorem multiple_rewrites (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : R ↔ Q) : P ↔ R := by
   rw [h₁]
   rw [h₂] -- implicit `rfl` call automatically closes `Q ↔ Q` in goal
@@ -579,7 +579,7 @@ Around 100,000 proofs out of 320,000 in mathlib are written in tactic mode,
 though this includes proofs of minor facts where term mode is more appropriate.
 -/
 
--- This is a proof in tactic mode because of `by` (and the usage of `assumption`)
+-- This is `imp_intro` in Lean (Init.Core)
 lemma id_proof (P Q : Prop) (p : P) (q : Q) : P := by
   assumption -- or `exact p`
 
@@ -613,7 +613,7 @@ lemma id_proof_term' : ∀ (P Q : Prop), P → Q → P :=
 
 -- Let us look at the identity function in various styles.
 
--- First in tactic mode with `intro`
+-- This is `id` in Lean (Init.Prelude)
 lemma identity_tactic_intro (P : Prop) : P → P := by
   intro p
   assumption -- or `exact p`
@@ -707,6 +707,7 @@ example (P Q R : Prop) (h₁ : P → Q → R) (h₂ : P → Q) : P → R :=
   r_of_q q
 
 -- Exercise 4.3 (Master)
+-- This is `Iff.trans` in Lean (Init.Core)
 -- Try turning this tactic mode proof into term mode, first without using
 -- `#print` and then using it
 theorem challenging_tactic_proof (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R := by

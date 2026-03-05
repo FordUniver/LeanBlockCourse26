@@ -55,7 +55,7 @@ It's useful for breaking down complex proofs into steps and is
 used around 34,000 times in mathlib.
 -/
 
--- Using have to build up facts step by step
+-- This is `Function.comp` in Lean (Init.Prelude), i.e., `(h₂ ∘ h₁) p`
 theorem example_forward (P Q R : Prop) (h₁ : P → Q) (h₂ : Q → R) (p : P) : R := by
   have q : Q := by exact h₁ p -- Since P implies Q and we have a proof of P, we have a proof of Q
   have r : R := by exact h₂ q -- Since Q implies R and we have a proof of Q, we have a proof of R
