@@ -135,42 +135,100 @@ variable (S T : Set α)
 
 -- Exercise 2.1
 theorem subset_union_right : T ⊆ S ∪ T := by
-  sorry
+  intro x xt
+  rw [Set.mem_union]
+  right
+  exact xt
+
+example (S T : Set α) : T ⊆ S ∪ T := fun _ xt => Or.inr xt
 
 -- Exercise 2.2
 theorem union_subset (R : Set α) (h₁ : R ⊆ T) (h₂ : S ⊆ T) : R ∪ S ⊆ T := by
-  sorry
+  rintro x (xr | xs)
+  · exact h₁ xr
+  · exact h₂ xs
+
+example (R S T : Set α) (h₁ : R ⊆ T) (h₂ : S ⊆ T) : R ∪ S ⊆ T := by
+  rintro x xrs
+  rcases xrs with xr | xs
+  · exact h₁ xr
+  · exact h₂ xs
 
 -- Exercise 2.3
 theorem union_subset_swap : S ∪ T ⊆ T ∪ S := by
-  sorry
+  intro x xst
+  rw [mem_union] at *
+  apply or_comm.mp 
+  exact xst
+
+example (S T : Set α) : S ∪ T ⊆ T ∪ S := by
+  intro x xst
+  rw [mem_union] at *
+  rw [or_comm]
+  exact xst
+
+example (S T : Set α) : S ∪ T ⊆ T ∪ S :=
+  fun _ xst => or_comm.mp xst
 
 -- Exercise 2.4
 theorem union_comm : S ∪ T = T ∪ S := by
-  sorry
+  ext x
+  rw [mem_union] -- this is optional
+  exact or_comm
 
 -- Exercise 2.5 (Master)
 theorem compl_inter : (S ∩ T)ᶜ = Sᶜ ∪ Tᶜ := by
-  sorry
+  ext x
+  rw [mem_compl_iff, mem_inter_iff, mem_union, mem_compl_iff, mem_compl_iff]
+  push_neg
+  constructor
+  · intro h
+    by_cases xs : x ∈ S 
+    · right; exact h xs
+    · left; exact xs
+  · intro h xs
+    obtain (nxs | nxt) := h
+    · contradiction
+    · exact nxt
 
 -- Exercise 2.6 (Master)
+-- This very nice solutions is thanks to Silas!
 theorem compl_union : (S ∪ T)ᶜ = Sᶜ ∩ Tᶜ := by
-  sorry
+  nth_rw 1 [← compl_compl S, ← compl_compl T]
+  rw [← compl_inter Sᶜ Tᶜ, compl_compl]
 
 -- Exercise 2.7 (Master)
 theorem union_assoc (R : Set α) : (R ∪ S) ∪ T = R ∪ (S ∪ T) := by
-  sorry
+  ext x
+  -- rw [mem_union, mem_union, mem_union, mem_union]
+  exact or_assoc
 
 -- Exercise 2.8 (Master)
 theorem inter_distrib_left (R : Set α) : R ∩ (S ∪ T) = (R ∩ S) ∪ (R ∩ T) := by
-  sorry
+  ext x
+  -- rw [mem_union, mem_inter_iff, mem_union, mem_inter_iff, mem_inter_iff]
+  exact and_or_left -- this is just `P ∧ (Q ∨ R) ↔ (P ∧ Q) ∨ (P ∧ R)`
 
 -- Exercise 2.9 (Master)
-example (R : Set α) (h₁ : R ∪ T ⊆ S ∪ T) (h₂ : R ∩ T ⊆ S ∩ T) : R ⊆ S := by
-  sorry
+example (R S T : Set α) (h₁ : R ∪ T ⊆ S ∪ T) (h₂ : R ∩ T ⊆ S ∩ T) : R ⊆ S := by
+  intro x xr
+  have xrut : x ∈ R ∪ T := Or.inl xr
+  have xsut : x ∈ S ∪ T := h₁ xrut
+  obtain (xs | xt) := xsut
+  · assumption
+  · have xrit : x ∈ R ∩ T := ⟨xr, xt⟩
+    have xsit : x ∈ S ∩ T := h₂ xrit
+    obtain ⟨xs, xt⟩ := xsit
+    assumption
 
--- Exercise 2.10 (Master)
 example (R : Set α) (h₁ : R ∪ T ⊆ S ∪ T) (h₂ : R ∩ T ⊆ S ∩ T) : R ⊆ S := by
-  sorry
+  intro x xr
+  obtain (xs | xt) := h₁ (Or.inl xr)
+  · exact xs
+  · exact (h₂ ⟨xr, xt⟩).1
+
+-- Finally, note the inconsistent naming scheme:
+#check Set.mem_inter_iff  -- `x ∈ a ∩ b ↔ x ∈ a ∧ x ∈ b` has `_iff` suffix ...
+#check Set.mem_union      -- ... `x ∈ a ∪ b ↔ x ∈ a ∨ x ∈ b` does not
 
 end P03S02B02
