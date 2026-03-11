@@ -91,7 +91,9 @@ theorem infinitude_of_primes_tfae : [
 
   tfae_have 1 → 5 := by sorry -- Tonio
 
-  tfae_have 1 → 3 := by sorry -- Nina
+  tfae_have 1 → 3 := by
+   simp at *   
+   sorry -- Nina
 
   tfae_have 3 → 5 := by sorry -- Daniel
 
